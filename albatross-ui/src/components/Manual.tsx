@@ -1,45 +1,18 @@
 import React, { useEffect } from 'react'
+import { generateInitialAlphabet, generateInitialReplaceTexts } from '../constants/initialAlphabetObject';
+import { IAlphabet, IReplaceTexts } from '../types';
 
 interface ManualProps {
 
-}
-
-interface IAlphabet {
-    [keys: string]: number
 }
 
 export const Manual: React.FC<ManualProps> = () => {
 
     const [cipherText, setCipherText] = React.useState<string>('');
     const [plainText, setPlainText] = React.useState<string>('');
-    const [alphabets, setAlphabets] = React.useState<IAlphabet>({
-        'a': 0,
-        'b': 0,
-        'c': 0,
-        'd': 0,
-        'e': 0,
-        'f': 0,
-        'g': 0,
-        'h': 0,
-        'i': 0,
-        'j': 0,
-        'k': 0,
-        'l': 0,
-        'm': 0,
-        'n': 0,
-        'o': 0,
-        'p': 0,
-        'q': 0,
-        'r': 0,
-        's': 0,
-        't': 0,
-        'u': 0,
-        'v': 0,
-        'w': 0,
-        'x': 0,
-        'y': 0,
-        'z': 0
-    });
+    const [alphabets, setAlphabets] = React.useState<IAlphabet>(generateInitialAlphabet());
+    const [keyPairs, setKeyPairs] = React.useState<IReplaceTexts>(generateInitialReplaceTexts());
+    const [isEmpty, setIsEmpty] = React.useState<boolean>(true);
 
     const isAlphabet = (char: string): boolean => {
         return /^[a-z]$/i.test(char);
@@ -60,12 +33,15 @@ export const Manual: React.FC<ManualProps> = () => {
         }
     }, [cipherText]);
 
-    const handleCipherTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setCipherText(event.target.value);
-    }
+    useEffect(() => {
+        if (isEmpty) {
+            setAlphabets(() => generateInitialAlphabet());
+        }
+    }, [isEmpty]);
 
-    const handlePlainTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setPlainText(event.target.value);
+    const handleCipherTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setCipherText(event.target.value.toLowerCase());
+        setIsEmpty(event.target.value.length === 0);
     }
 
     // function that sorts an object by value descending
@@ -80,6 +56,25 @@ export const Manual: React.FC<ManualProps> = () => {
             alph.push(String.fromCharCode(97 + i));
         }
         return alph;
+    }
+
+    const onReplace = () => {
+        Object.keys(keyPairs).filter(key => !!keyPairs[key]).forEach((key) => {
+            if (!!plainText) {
+                console.log(key);
+                setPlainText(plainText.replace(key, keyPairs[key]));
+            } else {
+                setPlainText(cipherText.replace(key, keyPairs[key]));
+            }
+        })   
+    }
+
+    const updateKeyPair = (index: number, value: string) => {
+        const key = String.fromCharCode(97+index);
+        setKeyPairs((prevKeyPairs) => ({
+            ...prevKeyPairs,
+            [key]: value
+        }));
     }
 
     return (
@@ -135,7 +130,7 @@ export const Manual: React.FC<ManualProps> = () => {
                     />
 
                 </div>
-                <div className="text-white my-1 rounded-2xl border border-blue-600" style={{
+                <div className="my-1 rounded-2xl border border-blue-600" style={{
                     flex: "1 1 0",
                     backgroundColor: "#ccc"
                 }}>
@@ -144,7 +139,6 @@ export const Manual: React.FC<ManualProps> = () => {
                     className="w-full resize-none" 
                     rows={5} 
                     value={plainText}
-                    onChange={handlePlainTextChange}
                     disabled
                     />
                 </div>
@@ -163,27 +157,27 @@ export const Manual: React.FC<ManualProps> = () => {
                 <div className="flex flex-row text-xs">
                     <div className="flex flex-col">
                         {
-                            generateAlphabets().slice(0, 13).map(char => (
+                            generateAlphabets().slice(0, 13).map((char, key) => (
                                 <div className="table">
                                     <p className="table-cell">{char} = </p> 
-                                    <input className="table-cell" />
+                                    <input className="table-cell" onChange={(e) => updateKeyPair(key, e.target.value.toLowerCase())} />
                                 </div>
                             ))
                         }
                     </div>
                     <div className="flex flex-col">
                         {
-                            generateAlphabets().slice(13).map(char => (
+                            generateAlphabets().slice(13).map((char, key) => (
                                 <div className="table">
                                     <p className="table-cell">{char} = </p> 
-                                    <input className="table-cell" />
+                                    <input className="table-cell" onChange={(e) => updateKeyPair(key+13, e.target.value.toLowerCase())} />
                                 </div>
                             ))
                         }
                     </div>
                 </div>
                 <div className="flex justify-around">
-                    <button className="bg-blue-600 text-white px-2 py-1 rounded-2xl mx-2">Replace</button>
+                    <button className="bg-blue-600 text-white px-2 py-1 rounded-2xl mx-2" onClick={onReplace}>Replace</button>
                     <button className="bg-red-600 text-white px-2 py-1 rounded-2xl mx-2">Clear</button>
                 </div>
             </div>
