@@ -3,12 +3,14 @@ import {
   generateInitialAlphabet,
   generateInitialReplaceTexts,
 } from "../constants/initialAlphabetObject";
-import { letterFreq, alphabetsArray } from "../constants/letterFreq";
+import { alphabetsArray, letterFreq } from "../constants/letterFreq";
 import { IAlphabet, IReplaceTexts } from "../types";
+import letterFreqJson from "../constants/letterfreq.json";
+import "./Manual.css";
 
 interface ManualProps {}
 
-export const Manual: React.FC<ManualProps> = () => {
+const Manual: React.FC<ManualProps> = () => {
   const [cipherText, setCipherText] = React.useState<string>("");
   const [plainText, setPlainText] = React.useState<string>("");
   const [alphabets, setAlphabets] = React.useState<IAlphabet>(
@@ -94,13 +96,32 @@ export const Manual: React.FC<ManualProps> = () => {
 
   return (
     <div className="flex flex-col h-full mt-8">
-      <div className="flex h-5/6">
+      <div className="flex h-6/7 text-sm">
+      <div
+          style={{
+            backgroundColor: "rgb(243, 246, 253)"
+          }}
+          className="mx-2 rounded-2xl overflow-y-scroll md:w-1/6 box-shadow"
+        >
+          <p style={{ color: "#042069" }} className="text-center text-xl my-2">
+            Letters Chart
+          </p>
+          <div className="flex flex-col">
+            {letterFreqJson.sort((a, b) => b.frequency - a.frequency)
+              .map((letterObject, index) => {
+                return (
+                  <div className="flex flex-row justify-around" key={index}>
+                    <p className="text-center">{letterObject.letter} ({letterObject.frequency} %) </p>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
         <div
           style={{
-            flex: "1 1 0",
-            backgroundColor: "#ffffcc",
+            backgroundColor: "rgb(243, 246, 253)",
           }}
-          className="shadow-lg mx-2 rounded-2xl overflow-y-scroll"
+          className="mx-2 rounded-2xl overflow-y-scroll md:w-1/6 box-shadow"
         >
           <p style={{ color: "#042069" }} className="text-center text-xl my-2">
             Character Frequency
@@ -111,8 +132,8 @@ export const Manual: React.FC<ManualProps> = () => {
               .map((char) => {
                 return (
                   <div className="flex flex-row justify-around">
-                    <p className="text-center text-xl">{char} = </p>
-                    <p className="text-center text-xl">
+                    <p className="text-center">{char} = </p>
+                    <p className="text-center">
                       {alphabets[char]} chars
                     </p>
                   </div>
@@ -122,13 +143,12 @@ export const Manual: React.FC<ManualProps> = () => {
         </div>
         <div
           style={{
-            flex: "2 2 0",
-            backgroundColor: "#ffffcc",
+            backgroundColor: "rgb(243, 246, 253)",
           }}
-          className="flex-col shadow-lg mx-2 rounded-2xl p-4"
+          className="flex-col mx-2 rounded-2xl p-4 md:w-2/6 box-shadow"
         >
           <div
-            className="text-black bg-white my-8 rounded-2xl border border-blue-600"
+            className="text-black bg-white my-8 rounded-2xl border border-blue-600 h-2/5"
             style={{
               flex: "1 1 0",
             }}
@@ -140,7 +160,7 @@ export const Manual: React.FC<ManualProps> = () => {
               Ciphertext
             </p>
             <textarea
-              className="w-full resize-none"
+              className="w-full resize-none h-3/4"
               rows={5}
               value={cipherText}
               onChange={handleCipherTextChange}
@@ -148,7 +168,7 @@ export const Manual: React.FC<ManualProps> = () => {
             />
           </div>
           <div
-            className="my-1 rounded-2xl border border-blue-600"
+            className="my-1 rounded-2xl border border-blue-600 h-2/5"
             style={{
               flex: "1 1 0",
               backgroundColor: "#ccc",
@@ -161,7 +181,7 @@ export const Manual: React.FC<ManualProps> = () => {
               Plaintext
             </p>
             <textarea
-              className="w-full resize-none"
+              className="w-full resize-none h-3/4"
               rows={5}
               value={plainText}
               disabled
@@ -170,28 +190,23 @@ export const Manual: React.FC<ManualProps> = () => {
         </div>
         <div
           style={{
-            flex: "1 1 0",
-            backgroundColor: "#ffffcc",
+            backgroundColor: "rgb(243, 246, 253)",
           }}
-          className="shadow-lg mx-2 rounded-2xl"
+          className="mx-2 rounded-2xl md:w-2/6 flex flex-col content-between box-shadow"
         >
-          <p style={{ color: "#042069" }} className="text-center text-xl my-2">
+          <p style={{ color: "#042069" }} className="text-center text-xl mt-2 md:h-6">
             Replace Characters
           </p>
-          <p className="px-2 mx-1 mt-1 text-sm">
-            Click Replace to make ciphertext chars replacement with your input
-            and clear to delete your entries
-          </p>
-          <div className="flex flex-row text-xs">
-            <div className="flex flex-col">
+          <div className="flex mt-4">
+            <div className="flex flex-col content-between">
               {alphabetsArray.slice(0, 13).map((char, key) => (
-                <div className="table">
+                <div className="table ml-1 text-xs my-1">
                   <p className="table-cell font-bold">{char} = </p>
                   {alphabets[char] > 0 && keyPairs[char] === "" && (
                     <label>This key pair is mandatory!</label>
                   )}
                   <input
-                    className="table-cell"
+                    className="table-cell md:w-2/3"
                     value={keyPairs[char]}
                     onChange={(e) =>
                       updateKeyPair(key, e.target.value.toLowerCase())
@@ -200,15 +215,15 @@ export const Manual: React.FC<ManualProps> = () => {
                 </div>
               ))}
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col content-between">
               {alphabetsArray.slice(13).map((char, key) => (
-                <div className="table">
+                <div className="table mr-1 text-xs my-1">
                   <p className="table-cell font-bold">{char} = </p>
                   {alphabets[char] > 0 && keyPairs[char] === "" && (
                     <label>This key pair is mandatory!</label>
                   )}
                   <input
-                    className="table-cell"
+                    className="table-cell md:w-2/3"
                     value={keyPairs[char]}
                     onChange={(e) =>
                       updateKeyPair(key + 13, e.target.value.toLowerCase())
@@ -218,10 +233,10 @@ export const Manual: React.FC<ManualProps> = () => {
               ))}
             </div>
           </div>
-          <div className="flex justify-around mt-2">
+          <div className="flex mt-2 justify-between text-center">
             <button
               onClick={generateKeyPairs}
-              className="bg-red-600 text-white px-2 py-1 rounded-2xl mx-2"
+              className="bg-red-600 text-white px-5 py-2 rounded-2xl mx-2 my-4"
             >
               Reset
             </button>
@@ -231,3 +246,5 @@ export const Manual: React.FC<ManualProps> = () => {
     </div>
   );
 };
+
+export default Manual;
