@@ -82,10 +82,33 @@ const Manual: React.FC<ManualProps> = () => {
   useEffect(() => {
     let newPlainText = "";
     cipherText.split("").forEach((val) => {
-      newPlainText = newPlainText + keyPairs[val];
+      newPlainText = newPlainText + (isAlphabet(val) ? keyPairs[val] : val);
     });
+
+    // gfg algo
+    const sortedAlphabets = sortObject(alphabets)
+      .slice(0, 5)
+      .filter((val) => alphabets[val] > 0);
+
+    if (sortedAlphabets.length)
+      newPlainText = newPlainText + "\n\n Other possibilities:\n";
+
+    sortedAlphabets.forEach((val, idx) => {
+      const diff = val.charCodeAt(0) - keyPairs[val].charCodeAt(0);
+
+      newPlainText = newPlainText + `${idx + 1}. `;
+      cipherText.split("").forEach((text) => {
+        newPlainText =
+          newPlainText +
+          (isAlphabet(text)
+            ? String.fromCharCode(text.charCodeAt(0) + diff)
+            : text);
+      });
+      newPlainText = newPlainText + "\n";
+    });
+
     setPlainText(newPlainText);
-  }, [cipherText, keyPairs]);
+  }, [cipherText, keyPairs, alphabets]);
 
   const handleCipherTextChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -131,7 +154,7 @@ const Manual: React.FC<ManualProps> = () => {
               .filter((char) => alphabets[char] !== 0)
               .map((char) => {
                 return (
-                  <div className="flex flex-row justify-around">
+                  <div className="flex flex-row justify-around" key={char}>
                     <p className="text-center">{char} = </p>
                     <p className="text-center">
                       {alphabets[char]} chars
@@ -200,7 +223,7 @@ const Manual: React.FC<ManualProps> = () => {
           <div className="flex mt-4">
             <div className="flex flex-col content-between">
               {alphabetsArray.slice(0, 13).map((char, key) => (
-                <div className="table ml-1 text-xs my-1">
+                <div className="table ml-1 text-xs my-1" key={`${char}-${key}`}>
                   <p className="table-cell font-bold">{char} = </p>
                   {alphabets[char] > 0 && keyPairs[char] === "" && (
                     <label>This key pair is mandatory!</label>
@@ -217,7 +240,7 @@ const Manual: React.FC<ManualProps> = () => {
             </div>
             <div className="flex flex-col content-between">
               {alphabetsArray.slice(13).map((char, key) => (
-                <div className="table mr-1 text-xs my-1">
+                <div className="table mr-1 text-xs my-1" key={`${char}-${key}`}>
                   <p className="table-cell font-bold">{char} = </p>
                   {alphabets[char] > 0 && keyPairs[char] === "" && (
                     <label>This key pair is mandatory!</label>
