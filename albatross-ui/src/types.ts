@@ -5,3 +5,8 @@ export interface IAlphabet {
 export interface IReplaceTexts {
     [key: string]: string
 }
+
+export interface IChartData {
+    char: string;
+    freq: number;
+}
