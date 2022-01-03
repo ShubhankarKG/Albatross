@@ -7,8 +7,6 @@ import "./Manual.css";
 import {
   Bar,
   BarChart,
-  Label,
-  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -57,7 +55,7 @@ const Manual: React.FC<ManualProps> = () => {
           }
         });
 
-        const totalAlphabets = Object.values(alphabets).reduce(
+        const totalAlphabets = Object.values(newAlphabets).reduce(
           (a, b) => a + b,
           0
         );
