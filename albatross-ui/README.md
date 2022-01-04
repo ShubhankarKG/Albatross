@@ -1,22 +1,23 @@
-# cra-template-tailwindcss-typescript
+# SETUP
 
-A streamlined [Tailwind CSS](https://tailwindcss.com) template for [Create React App](https://github.com/facebook/create-react-app) in [TypeScript](https://www.typescriptlang.org/).
+Ensure that you have the Node.js runtime installed and yarn installed.
 
-> This template installs and sets up [Tailwind CSS](https://tailwindcss.com) with TypeScript support.
-
-## Usage
-
+To setup a local development environment, run the following commands:
 ```bash
-npx create-react-app --template tailwindcss-typescript
+$ yarn
+$ yarn start
 ```
 
-## Credits
+Go to http://localhost:3000/ to view albatross-ui.
 
-This project was made possible thanks to the following projects.
+---
 
-1. [GeoffSelby/cra-template-tailwindcss](https://github.com/GeoffSelby/cra-template-tailwindcss) - A streamlined Tailwind CSS template for Create React App (in JavaScript).
-2. [cra-template-typescript](https://github.com/facebook/create-react-app/tree/master/packages/cra-template-typescript) - An official TypeScript template for create-react-app.
+# BUILD
 
-## License
+To create a production build, run the following commands:
+```bash
+$ yarn
+$ yarn run build
+```
 
-MIT © [Sung M. Kim](https://sung.codes)
+This creates a folder called `build` in the current directory. You can use any static server to serve the contents of this folder.
